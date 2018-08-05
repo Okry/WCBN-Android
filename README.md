@@ -1,0 +1,1 @@
+Uses android.support.v4.app.Fragment, dont use any others.
