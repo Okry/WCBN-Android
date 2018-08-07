@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class HomeFragment : Fragment(){
+class ScheduleFragment : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_home, null)
+        return inflater?.inflate(R.layout.fragment_schedule, null)
 
     }
 }
