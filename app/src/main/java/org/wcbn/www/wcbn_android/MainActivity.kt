@@ -8,17 +8,21 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.RadioGroup
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import org.wcbn.www.wcbn_android.R.id.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var playing: Boolean = false
+    private var live: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -83,5 +87,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+
+    fun buttonPlayPause(view: View) {
+        if (!playing) {
+            playing = true
+            Toast.makeText(this, "play clicky", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            playing = false
+            live = false
+            Toast.makeText(this, "pause clicky", Toast.LENGTH_SHORT).show()
+            findViewById<RadioGroup>(R.id.liveGroup).clearCheck()
+
+        }
+    }
+
+    fun buttonLive(view: View) {
+        if (!live) {
+            live = true
+            Toast.makeText(this, "live clicky", Toast.LENGTH_SHORT).show()
+        }
     }
 }
