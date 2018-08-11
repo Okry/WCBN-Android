@@ -1,7 +1,6 @@
 package org.wcbn.www.wcbn_android
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -13,7 +12,6 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import org.wcbn.www.wcbn_android.R.id.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var playing: Boolean = false
@@ -58,7 +56,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun displayFragment(id: Int) {
+
+    private fun displayFragment(id: Int) {
         val fragment = when (id) {
             R.id.nav_home -> {
                 HomeFragment()
@@ -90,6 +89,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
+
+    //Buttons!
     fun buttonPlayPause(view: View) {
         if (!playing) {
             playing = true
@@ -110,4 +111,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Toast.makeText(this, "live clicky", Toast.LENGTH_SHORT).show()
         }
     }
+    //End of Buttons!
 }
+
