@@ -33,6 +33,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    // jsoup HTML parser library @ https://jsoup.org/
+    // jsoup HTML parser library @ https://jsoup.org/, keep updated
     implementation 'org.jsoup:jsoup:1.11.3'
+    // Anko dependencies, keep updated
+    implementation "org.jetbrains.anko:anko-commons:0.10.5"
 }

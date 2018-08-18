@@ -12,6 +12,8 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
 import org.jsoup.Jsoup
 
 
@@ -26,11 +28,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        //setupPermissions()
-
-
-            val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(
+            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -40,14 +39,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-
-    //Begin Permissions
-
-    //End Permissions
-
-
-
-
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -55,6 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onBackPressed()
         }
     }
+
 
 
     private fun displayFragment(id: Int) {
@@ -95,25 +87,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (!playing) {
             playing = true
             Toast.makeText(this, "play clicky", Toast.LENGTH_SHORT).show()
-            /*
-            var doc = Jsoup.connect("http://app.wcbn.org/").get().run {
-                select("div.rc").forEachIndexed { index, element ->
-                    val titleAnchor = element.select("h3 a")
-                    val title = titleAnchor.text()
-                    val url = titleAnchor.attr("href")
-
-                    println("$index. $title ($url)")
-                }
-            }
-            */
-
+            doAsync { shouldParseHTML() }
         }
         else {
             playing = false
             live = false
             Toast.makeText(this, "pause clicky", Toast.LENGTH_SHORT).show()
             findViewById<RadioGroup>(R.id.liveGroup).clearCheck()
-
         }
     }
 
@@ -125,5 +105,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
     //End of Buttons!
+
+    fun shouldParseHTML() {
+        //1. Fetching the HTML from a given URL
+        Jsoup.connect("https://www.google.co.in/search?q=this+is+a+test").get().run {
+            //2. Parses and scrapes the HTML response
+            select("div.rc").forEachIndexed { index, element ->
+                val titleAnchor = element.select("h3 a")
+                val title = titleAnchor.text()
+                val url = titleAnchor.attr("href")
+                //3. Dumping Search Index, Title and URL on the stdout.
+                toast(title)
+                //println("$index. $title ($url)")
+            }
+        }
+    }
 }
 
