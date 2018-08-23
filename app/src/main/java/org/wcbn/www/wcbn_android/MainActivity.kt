@@ -1,13 +1,18 @@
 package org.wcbn.www.wcbn_android
 
 
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Looper
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,12 +22,16 @@ import org.jetbrains.anko.toast
 import org.jsoup.Jsoup
 
 
-
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private val streamURL = "http://floyd.wcbn.org:8000/wcbn-hd.mp3"
+    private val semestersURL = "https://app.wcbn.org/semesters/10"
+    private val semestersJson = "$semestersURL.json"
     private var playing: Boolean = false
     private var live: Boolean = true
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
 
 
+    // Initialization on app start
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -48,7 +57,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-
+    // Fragment management
     private fun displayFragment(id: Int) {
         val fragment = when (id) {
             R.id.nav_home -> {
@@ -78,45 +87,72 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+    // End of fragment management
 
 
-
-
-    //Buttons!
+    // Button management
+    // This button plays and pauses the music from the stream, initializes mediaPlayer on app start as well
     fun buttonPlayPause(@Suppress("UNUSED_PARAMETER") view: View) {
         if (!playing) {
             playing = true
-            Toast.makeText(this, "play clicky", Toast.LENGTH_SHORT).show()
-            doAsync { shouldParseHTML() }
+            if (live) {
+                mediaPlayer.setDataSource(streamURL)
+                mediaPlayer.prepare()
+            }
+            mediaPlayer.start()
         }
         else {
             playing = false
             live = false
-            Toast.makeText(this, "pause clicky", Toast.LENGTH_SHORT).show()
+            mediaPlayer.pause()
             findViewById<RadioGroup>(R.id.liveGroup).clearCheck()
         }
     }
 
-
+    // This button resets the WCBN stream if it is not live and resumes the music
     fun buttonLive(@Suppress("UNUSED_PARAMETER") view: View) {
         if (!live) {
             live = true
             Toast.makeText(this, "live clicky", Toast.LENGTH_SHORT).show()
+            mediaPlayer.reset()
+            if (!playing) {
+                findViewById<Button>(R.id.playerButton).performClick()
+            }
+            else {
+                mediaPlayer.setDataSource(streamURL)
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            }
         }
     }
-    //End of Buttons!
 
-    fun shouldParseHTML() {
+    // Experimental Button!
+    // This button will stop stream, pause music, and set to live
+    fun buttonStop(@Suppress("UNUSED_PARAMETER") view: View) {
+        if (playing) {
+            findViewById<Button>(R.id.playerButton).performClick()
+        }
+        mediaPlayer.stop()
+        live = true
+        findViewById<RadioButton>(R.id.liveButton).isChecked
+    }
+
+
+    // You can call these using doAsync { ... }
+    // This is a test function for future HTML parsing
+    private fun testParseHTML() {
         //1. Fetching the HTML from a given URL
-        Jsoup.connect("https://www.google.co.in/search?q=this+is+a+test").get().run {
+        Jsoup.connect(semestersURL).get().run {
             //2. Parses and scrapes the HTML response
             select("div.rc").forEachIndexed { index, element ->
                 val titleAnchor = element.select("h3 a")
                 val title = titleAnchor.text()
                 val url = titleAnchor.attr("href")
                 //3. Dumping Search Index, Title and URL on the stdout.
-                toast(title)
                 //println("$index. $title ($url)")
+                Looper.prepare()
+                toast(url)
+                Looper.loop()
             }
         }
     }

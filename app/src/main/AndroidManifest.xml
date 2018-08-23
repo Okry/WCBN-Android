@@ -3,6 +3,7 @@
     package="org.wcbn.www.wcbn_android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="false"
